@@ -31,7 +31,7 @@ def auth_bling():
 
     # https://www.bling.com.br/Api/v3/oauth/authorize?response_type=code&client_id=c4c47013a68b1d18b39683fa50a57defa11570ec&state=3385a9fad555857b966385f35de9517a
     # Redireciona o usuário para a página de autorização do Bling
-    redirect_url = f'{AUTHORIZATION_URL}?{urlencode(params)}'
+    redirect_url = f'{AUTHORIZATION_URL}?{urlencode(params)}' 
     return redirect(redirect_url)
 
 
@@ -39,9 +39,6 @@ def auth_bling():
 def oauth_callback():
    
     code = request.args.get('code')
-    if not code:
-        return "Erro: Código de autorização não encontrado.", 400
-
     auth_header = base64.b64encode(f"{CLIENT_ID}:{CLIENT_SECRET}".encode()).decode()
     headers = {
         'Authorization': f"Basic {auth_header}",
@@ -57,11 +54,8 @@ def oauth_callback():
     response = requests.post(TOKEN_URL, headers=headers, data=data)
     token_data = response.json()
     access_token = token_data['access_token']
-    if not access_token:
-        return "Erro: Token de acesso não encontrado na resposta.", 400
 
     return f"Token de acesso: {access_token}", 200
-
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
